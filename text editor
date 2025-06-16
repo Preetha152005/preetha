@@ -1,0 +1,168 @@
+package javaproject;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.event.*;
+
+public class Texteditor extends JFrame implements ActionListener {
+
+    JTextArea textArea;
+    JLabel wordCountLabel;
+    JMenuItem openItem, saveItem, newItem, exitItem, cutItem, copyItem, pasteItem;
+    JMenuItem bgColorItem, textColorItem;
+    JComboBox<String> fontBox;
+    JSpinner fontSizeSpinner;
+
+    public  Texteditor () {
+        setTitle("Advanced Text Editor");
+        setSize(700, 550);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        // Text area
+        textArea = new JTextArea();
+        textArea.setFont(new Font("Arial", Font.PLAIN, 16));
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        add(scrollPane, BorderLayout.CENTER);
+
+        // Word Count
+        wordCountLabel = new JLabel("Words: 0");
+        add(wordCountLabel, BorderLayout.SOUTH);
+
+        textArea.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent e) {
+                updateWordCount();
+            }
+        });
+
+        // Menu Bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenu editMenu = new JMenu("Edit");
+        JMenu formatMenu = new JMenu("Format");
+
+        // File menu items
+        newItem = new JMenuItem("New");
+        openItem = new JMenuItem("Open");
+        saveItem = new JMenuItem("Save");
+        exitItem = new JMenuItem("Exit");
+
+        newItem.addActionListener(this);
+        openItem.addActionListener(this);
+        saveItem.addActionListener(this);
+        exitItem.addActionListener(this);
+
+        fileMenu.add(newItem);
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.add(exitItem);
+
+        // Edit menu items
+        cutItem = new JMenuItem("Cut");
+        copyItem = new JMenuItem("Copy");
+        pasteItem = new JMenuItem("Paste");
+
+        cutItem.addActionListener(e -> textArea.cut());
+        copyItem.addActionListener(e -> textArea.copy());
+        pasteItem.addActionListener(e -> textArea.paste());
+
+        editMenu.add(cutItem);
+        editMenu.add(copyItem);
+        editMenu.add(pasteItem);
+
+        // Format menu items
+        bgColorItem = new JMenuItem("Background Color");
+        textColorItem = new JMenuItem("Text Color");
+
+        bgColorItem.addActionListener(e -> {
+            Color bg = JColorChooser.showDialog(null, "Choose Background Color", textArea.getBackground());
+            if (bg != null) {
+                textArea.setBackground(bg);
+            }
+        });
+
+        textColorItem.addActionListener(e -> {
+            Color fg = JColorChooser.showDialog(null, "Choose Text Color", textArea.getForeground());
+            if (fg != null) {
+                textArea.setForeground(fg);
+            }
+        });
+
+        formatMenu.add(bgColorItem);
+        formatMenu.add(textColorItem);
+
+        // Font selection
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        fontBox = new JComboBox<>(fonts);
+        fontBox.setSelectedItem("Arial");
+        fontBox.addActionListener(e -> updateFont());
+
+        fontSizeSpinner = new JSpinner(new SpinnerNumberModel(16, 8, 72, 1));
+        fontSizeSpinner.addChangeListener(e -> updateFont());
+
+        menuBar.add(fileMenu);
+        menuBar.add(editMenu);
+        menuBar.add(formatMenu);
+        menuBar.add(new JLabel(" Font: "));
+        menuBar.add(fontBox);
+        menuBar.add(new JLabel(" Size: "));
+        menuBar.add(fontSizeSpinner);
+
+        setJMenuBar(menuBar);
+        setVisible(true);
+    }
+
+    private void updateFont() {
+        String fontName = (String) fontBox.getSelectedItem();
+        int fontSize = (int) fontSizeSpinner.getValue();
+        textArea.setFont(new Font(fontName, Font.PLAIN, fontSize));
+    }
+
+    private void updateWordCount() {
+        String text = textArea.getText().trim();
+        int words = text.isEmpty() ? 0 : text.split("\\s+").length;
+        wordCountLabel.setText("Words: " + words);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == newItem) {
+            textArea.setText("");
+        }
+
+        if (e.getSource() == openItem) {
+            JFileChooser chooser = new JFileChooser();
+            int option = chooser.showOpenDialog(this);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                try (BufferedReader br = new BufferedReader(new FileReader(chooser.getSelectedFile()))) {
+                    textArea.setText("");
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        textArea.append(line + "\n");
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Error opening file.");
+                }
+            }
+        }
+
+        if (e.getSource() == saveItem) {
+            JFileChooser chooser = new JFileChooser();
+            int option = chooser.showSaveDialog(this);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(chooser.getSelectedFile()))) {
+                    bw.write(textArea.getText());
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Error saving file.");
+                }
+            }
+        }
+
+        if (e.getSource() == exitItem) {
+            System.exit(0);
+        }
+    }
+
+    public static void main(String[] args) {
+        new  Texteditor ();
+    }
+}
