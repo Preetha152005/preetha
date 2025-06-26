@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>K PREETHA | Portfolio</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background-color: #2c3e50;
+      color: #fff;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    nav {
+      background: #34495e;
+      padding: 10px 0;
+      text-align: center;
+    }
+    nav a {
+      color: #ecf0f1;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    section {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: none;
+      transition: opacity 0.5s, transform 0.5s;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #summary.active {
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      color: #222;
+      box-shadow: 0 8px 32px rgba(100, 100, 255, 0.15);
+      border: 2px solid #b388ff;
+      position: relative;
+      overflow: hidden;
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 1.2s;
+    }
+    #summary.active::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: -100px; right: -100px; bottom: -100px;
+      background: radial-gradient(circle at 20% 30%, #b388ff55 0%, transparent 60%),
+                  radial-gradient(circle at 80% 70%, #8ec5fc55 0%, transparent 60%),
+                  linear-gradient(120deg, #e0c3fc33 0%, #8ec5fc33 100%);
+      z-index: 0;
+      animation: bgMove 8s linear infinite alternate;
+    }
+    @keyframes bgMove {
+      0% { background-position: 20% 30%, 80% 70%; }
+      100% { background-position: 40% 60%, 60% 40%; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    #summary.active h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      color: #2c3e50;
+      z-index: 1;
+      text-shadow: 0 2px 12px #fff8, 0 1px 0 #b388ff;
+    }
+    #summary.active p.title {
+      font-size: 1.5rem;
+      color: #5e35b1;
+      margin-bottom: 30px;
+      font-weight: 600;
+      z-index: 1;
+    }
+    #summary.active .summary-content {
+      font-size: 1.2rem;
+      max-width: 600px;
+      text-align: center;
+      z-index: 1;
+      background: rgba(255,255,255,0.7);
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px #b388ff22;
+    }
+    #skills.active {
+      background: #d1e7dd;
+      color: #0f5132;
+      border-left: 5px solid #198754;
+    }
+    #projects.active {
+      background: #d1e7dd;
+      color: #0f5132;
+      border-left: 5px solid #198754;
+    }
+    #experience.active {
+      background: #d1e7dd;
+      color: #0f5132;
+      border-left: 5px solid #198754;
+    }
+    #education.active {
+      background: #d1e7dd;
+      color: #0f5132;
+      border-left: 5px solid #198754;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #dcdde1;
+      color: #555;
+      margin-top: 30px;
+    }
+    .contact a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: none;
+      background: #2c3e50;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .skills-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .skill-btn {
+      background: #fff;
+      border: 2px solid #198754;
+      color: #198754;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .skill-btn:hover, .skill-btn.active {
+      background: #198754;
+      color: #fff;
+    }
+    .skill-description {
+      margin-top: 25px;
+      background: #e9f7ef;
+      border-left: 4px solid #198754;
+      padding: 18px 24px;
+      border-radius: 8px;
+      min-height: 40px;
+      font-size: 1.1rem;
+      color: #14532d;
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    .skill-description.active {
+      display: block;
+    }
+    .projects-list, .experience-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .project-btn, .exp-btn {
+      background: #fff;
+      border: 2px solid #0d6efd;
+      color: #0d6efd;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .project-btn:hover, .project-btn.active, .exp-btn:hover, .exp-btn.active {
+      background: #0d6efd;
+      color: #fff;
+    }
+    .project-description, .exp-description {
+      margin-top: 25px;
+      background: #e7f1ff;
+      border-left: 4px solid #0d6efd;
+      padding: 18px 24px;
+      border-radius: 8px;
+      min-height: 40px;
+      font-size: 1.1rem;
+      color: #0d2a4a;
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    .project-description.active, .exp-description.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>K. Preetha</h1>
+  <p>Software Developer | Chennai, India</p>
+</header>
+
+<nav>
+  <a href="#summary">Summary</a>
+  <a href="#skills">Skills</a>
+  <a href="#projects">Projects</a>
+  <a href="#experience">Experience</a>
+  <a href="#education">Education</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<section id="summary" class="active">
+  <h1>K. Preetha</h1>
+  <p class="title">SoftwareDeveloper | Chennai, India</p>
+  <div class="summary-content">
+    <p>Aspiring Application Developer with practical experience in Java, SQL, and web development (HTML, CSS, JavaScript). Proven ability to apply programming knowledge to real-world problems through IoT & embedded system projects, including participation in the Smart India Hackathon. Strong analytical mindset with a focus on team-driven, solution-oriented development. Completed a hands-on internship that enhanced both technical proficiency and collaborative problem-solving skills.
+
+.</p>
+  </div>
+</section>
+
+<section id="skills">
+  <a href="#skills"><h2>Skills</h2></a>
+  <ul class="skills-list">
+    <li><button class="skill-btn" data-skill="java"><strong>Java</strong></button></li>
+    <li><button class="skill-btn" data-skill="sql"><strong>SQL</strong></button></li>
+    <li><button class="skill-btn" data-skill="html"><strong>HTML</strong></button></li>
+    <li><button class="skill-btn" data-skill="css"><strong>CSS</strong></button></li>
+    <li><button class="skill-btn" data-skill="js"><strong>JavaScript (basic)</strong></button></li>
+    <li><button class="skill-btn" data-skill="github"><strong>GitHub</strong></button></li>
+    <li><button class="skill-btn" data-skill="appinventor"><strong>MIT App Inventor</strong></button></li>
+    <li><button class="skill-btn" data-skill="db"><strong>Database handling</strong></button></li>
+    <li><button class="skill-btn" data-skill="iot"><strong>IoT Integration</strong></button></li>
+    <li><button class="skill-btn" data-skill="time"><strong>Time Management</strong></button></li>
+    <li><button class="skill-btn" data-skill="problem"><strong>Problem Solving</strong></button></li>
+    <li><button class="skill-btn" data-skill="team"><strong>Team Collaboration</strong></button></li>
+  </ul>
+  <div id="skill-description" class="skill-description"></div>
+</section>
+
+<section id="projects">
+  <a href="#projects"><h2>Projects</h2></a>
+  <ul class="projects-list">
+    <li><button class="project-btn" data-project="rf"><strong>RF Energy Harvesting</strong></button></li>
+    <li><button class="project-btn" data-project="irrigation"><strong>Smart Irrigation</strong></button></li>
+    <li><button class="project-btn" data-project="bluetooth"><strong>Bluetooth Control Card</strong></button></li>
+    <li><button class="project-btn" data-project="solar"><strong>Solar Tracker</strong></button></li>
+    <li><button class="project-btn" data-project="air"><strong>Air Quality Monitor</strong></button></li>
+    <li><button class="project-btn" data-project="banking"><strong>Banking System</strong></button></li>
+    <li><button class="project-btn" data-project="editor"><strong>Text Editor</strong></button></li>
+  </ul>
+  <div id="project-description" class="project-description"></div>
+</section>
+
+<section id="experience">
+  <a href="#experience"><h2>Experience & Volunteering</h2></a>
+  <ul class="experience-list">
+    <li><button class="exp-btn" data-exp="base"><strong>Base Electronics System</strong></button></li>
+    <li><button class="exp-btn" data-exp="cpcl"><strong>CPCL</strong></button></li>
+    <li><button class="exp-btn" data-exp="mentor"><strong>Mentorship</strong></button></li>
+  </ul>
+  <div id="exp-description" class="exp-description"></div>
+</section>
+
+<section id="education">
+  <a href="#education"><h2>Education</h2></a>
+  <p><strong>Panimalar Engineering College, Chennai</strong><br/>B.E. in Electronics & Communication Engineering</p>
+</section>
+
+<section id="contact" class="contact">
+  <a href="#contact"><h2>Contact</h2></a>
+  <p>Email: <a href="mailto:kkavitha050587@gmail.com">kkavitha050587@gmail.com</a></p>
+  <p>LinkedIn: <a href="https://www.linkedin.com/in/preetha-k-b36896268" target="_blank">preetha-k</a></p>
+  <p>GitHub: <a href="https://github.com/Preetha152005" target="_blank">Preetha152005</a></p>
+</section>
+
+<div class="scroll-top" onclick="scrollToTop()">↑ Top</div>
+
+<footer>
+  &copy; 2025 K. Preetha | Designed with ❤️ for the web
+</footer>
+
+<script>
+  // SPA-like navigation for sections
+  const navLinks = document.querySelectorAll('nav a');
+  const sections = document.querySelectorAll('section');
+  function showSection(id) {
+    sections.forEach(sec => {
+      if (sec.id === id) {
+        sec.classList.add('active');
+      } else {
+        sec.classList.remove('active');
+      }
+    });
+  }
+  navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = this.getAttribute('href').replace('#', '');
+      showSection(target);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+  // Show only summary on load
+  showSection('summary');
+
+  // Scroll-to-top button
+  const scrollBtn = document.querySelector('.scroll-top');
+  window.onscroll = function () {
+    scrollBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
+  };
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Skill descriptions
+  const skillDescriptions = {
+    java: 'Java: Object-oriented programming, GUI apps, and backend logic. Used for Banking System and Text Editor projects.',
+    sql: 'SQL: Database design, queries, and data management. Experience with MySQL and SQLite.',
+    html: 'HTML: Semantic, accessible markup for modern web apps.',
+    css: 'CSS: Responsive layouts, Flexbox, Grid, and creative UI styling.',
+    js: 'JavaScript (basic): DOM manipulation, interactivity, and simple logic.',
+    github: 'GitHub: Version control, collaboration, and project management.',
+    appinventor: 'MIT App Inventor: Built mobile apps with visual programming.',
+    db: 'Database handling: Schema design, CRUD operations, and data integrity.',
+    iot: 'IoT Integration: Embedded systems, sensor data, and device communication.',
+    time: 'Time Management: Efficient planning and task prioritization.',
+    problem: 'Problem Solving: Analytical thinking and creative solutions.',
+    team: 'Team Collaboration: Effective communication and teamwork in projects.'
+  };
+  const skillBtns = document.querySelectorAll('.skill-btn');
+  const skillDescDiv = document.getElementById('skill-description');
+  skillBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      skillBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const key = this.getAttribute('data-skill');
+      skillDescDiv.textContent = skillDescriptions[key] || '';
+      skillDescDiv.classList.add('active');
+    });
+  });
+
+  // Project descriptions
+  const projectDescriptions = {
+    rf: 'RF Energy Harvesting: Developed a system to capture ambient radio frequency energy and convert it to power for smart grids. Finalist at Smart India Hackathon 2024.',
+    irrigation: 'Smart Irrigation: Automated watering system using soil moisture sensors and microcontrollers for efficient water usage.',
+    bluetooth: 'Bluetooth Control Card: Designed a wireless switch board controlled via mobile app for home automation.',
+    solar: 'Solar Tracker: Built a solar panel system that auto-aligns to the sun for maximum energy capture.',
+    air: 'Air Quality Monitor: IoT device using ESP8266 to detect and report pollution levels in real time.',
+    banking: 'Banking System: Java OOP project simulating core banking operations with user authentication and transactions.',
+    editor: 'Text Editor: Java GUI application with file save, open, and edit features, mimicking a basic notepad.'
+  };
+  const projectBtns = document.querySelectorAll('.project-btn');
+  const projectDescDiv = document.getElementById('project-description');
+  projectBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      projectBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const key = this.getAttribute('data-project');
+      projectDescDiv.textContent = projectDescriptions[key] || '';
+      projectDescDiv.classList.add('active');
+    });
+  });
+
+  // Experience descriptions
+  const expDescriptions = {
+    base: 'Base Electronics System: Data Analyst Intern (1 month). Analyzed procurement documents, extracted actionable insights, and contributed to process improvements.',
+    cpcl: 'CPCL: Plant Intern. Studied sulfur unit operations, learned about industrial process flows, and safety protocols.',
+    mentor: 'Mentorship: Peer mentor in electronics & IT, guiding juniors in projects and technical concepts.'
+  };
+  const expBtns = document.querySelectorAll('.exp-btn');
+  const expDescDiv = document.getElementById('exp-description');
+  expBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      expBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const key = this.getAttribute('data-exp');
+      expDescDiv.textContent = expDescriptions[key] || '';
+      expDescDiv.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
